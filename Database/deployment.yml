@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: db
+          image: tintoka/db-image:latest
+          envFrom:
+            - secretRef:
+                name: bepa-secret
+            - configMapRef:
+                name: bepa-config    
+          ports:
+            - containerPort: 3306
+              name: db
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: db-vol
+          persistentVolumeClaim:
+            claimName: db-claim
+    
+

@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bepa-cronjob
+spec:
+  schedule: "*/3 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: bepa-cronjob
+            image: tintoka/bepa-image:latest
+            ports:
+            - containerPort: 8080
+              name: bepa
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "250m"
+              limits:
+                memory: "80Mi"
+                cpu: "500m"
+            envFrom:
+            - configMapRef:
+                name: bepa-config
+            - secretRef:
+                name: bepa-secret
+            imagePullPolicy: IfNotPresent
+
+          restartPolicy: OnFailure

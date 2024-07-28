@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: gui
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gui
+  template:
+    metadata:
+      labels:
+        app: gui
+    spec:
+      containers:
+        - name: gui
+          image: tintoka/gui-image:latest
+          ports:
+            - containerPort: 5000
+              name: gui
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "80Mi"
+              cpu: "500m"
+          envFrom:
+            - configMapRef:
+                name: bepa-config
+
+

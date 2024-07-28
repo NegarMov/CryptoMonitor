@@ -1,0 +1,11 @@
+peykName: peyk-name
+
+dbImage:
+  name: tintoka/db-image
+  tag: latest
+
+configmap:
+  name: proj-config
+
+ingress:
+  enabled: true

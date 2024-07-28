@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Currency Tracker</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even){
+            background-color: #f2f2f2
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        .scrollable-table {
+            max-height: 200px;
+            max-width: 400px;
+            overflow-y: scroll;
+            margin: 0 auto;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        input {
+            width: 200px;
+            padding: 3px 10px;
+            border-radius: 5px;
+            margin: 7.5px;
+        }
+
+        .form-container {
+            border: 2px solid rgb(100, 100, 100);
+            padding: 20px;
+            max-width: 50%;
+            margin: 0 auto;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Currency History</h1>
+
+        <form method="post" action="/get_currency_history">
+            <label for="currency_name">Currency Name:</label><br>
+            <input type="text" id="currency_name" name="currency_name"><br><br>
+
+            <button type="submit">Get Currency History</button>
+        </form><br>
+        
+        {% if price_history %}
+            <h3>Price history for {{ currency_name }}</h3>
+
+            <div class="scrollable-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fetch Time</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for entry in price_history %}
+                        <tr>
+                            <td>{{ entry.fetch_timestamp }}</td>
+                            <td>{{ entry.price }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+    
+    <br><br><br><br>
+
+    <div class="form-container">
+        <h1>Subscribe to Currency</h1>
+
+        <form method="post" action="/subscribe">
+            <label for="currency_name">Currency Name:</label><br>
+            <input type="text" id="currency_name" name="currency_name"><br><br>
+
+            <label for="email">E-mail:</label><br>
+            <input type="text" id="email" name="email"><br><br>
+
+            <label for="difference_percentage">Difference Percentage:</label><br>
+            <input type="text" id="difference_percentage" name="difference_percentage"><br><br>
+
+            <button type="submit">Subscribe</button>
+        </form>
+
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

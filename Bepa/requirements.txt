@@ -1,0 +1,6 @@
+requests
+pymysql
+cryptography
+ndg-httpsclient
+pyopenssl
+pyasn1

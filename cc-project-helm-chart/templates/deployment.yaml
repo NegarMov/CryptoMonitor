@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: db
+          image: "{{ .Values.dbImage.name}}:{{ .Values.dbImage.tag}}"
+          envFrom:
+            - secretRef:
+                name: bepa-secret
+            - configMapRef:
+                name: {{.Values.configmap.name}}  
+          ports:
+            - containerPort: 3306
+              name: db
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: db-vol
+          persistentVolumeClaim:
+            claimName: db-claim
+    
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: coinnews
+  labels:
+    type: data-source
+    app: coinnews
+    kubernetes.app: data-source
+  annotations:
+    imageregistry: "https://hub.docker.com/"
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coinnews
+  template:
+    metadata:
+      labels:
+        app: coinnews
+    spec:
+      containers:
+        - name: coinnews
+          image: amirhossein21/coinnews.linux:v0.2
+          ports:
+            - containerPort: 8000
+              name: coinnews
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: config
+              mountPath: /go/src/app/config.yml
+              subPath: config.yml
+          livenessProbe:
+            httpGet:
+              port: 8000
+              path: /
+            initialDelaySeconds: 3
+            periodSeconds: 3
+      volumes:
+        - name: config
+          configMap:
+            name: coinnews-configs
+
+---            
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ .Values.peykName}}
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: {{ .Values.peykName}}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.peykName}}
+    spec:
+      containers:
+        - name: {{ .Values.peykName}}
+          image: tintoka/peyk-image:latest
+          ports:
+            - containerPort: 80
+              name: {{ .Values.peykName}}
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "600Mi"
+              cpu: "500m"
+          envFrom:
+            - configMapRef:
+                name: {{.Values.configmap.name}}
+            - secretRef:
+                name: bepa-secret
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: gui
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gui
+  template:
+    metadata:
+      labels:
+        app: gui
+    spec:
+      containers:
+        - name: gui
+          image: tintoka/gui-image:latest
+          ports:
+            - containerPort: 5000
+              name: gui
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "80Mi"
+              cpu: "500m"
+          envFrom:
+            - configMapRef:
+                name: {{.Values.configmap.name}}
+
+

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bepa-config
+data:
+  DB_TIMEOUT: "10"
+  DB_NAME: "cc-finalProject"
+  DB_HOST: "db"
+  DB_PORT: "3306"
+
+  MAIL_SERVICE_URL: "https://api.mailgun.net/v3/sandbox6748cfee9f664439be9af8f9eca357f4.mailgun.org/messages"
+  MAIL_SERVICE_KEY: "f6963d9b50b5f877eb9dba76d7b75dcf-7764770b-29bb0025"
+  COIN_NEWS_HOST: "http://coinnews"
+  COIN_NEWS_PORT: "8000"
+
+  PEYK_API_HOST: "0.0.0.0"
+  PEYK_API_PORT: "80"
+
+  # DB_USERNAME: "root"
+  # DB_PASSWORD: "12345"
+
+  # MYSQL_ROOT_PASSWORD: "12345"
+  MYSQL_DATABASE: "cc-finalProject"
+
+  PEYK_HOST: "http://peyk"
+  PEYK_PORT: "80"
